@@ -1,5 +1,6 @@
 package com.example.masterthegods;
 
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ImageView;
 
@@ -182,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 if (god.name.equals(slayer)) {
                     break;
                 }
+                god.success_count += 1;
             }
         }
     }
@@ -195,4 +200,49 @@ public class MainActivity extends AppCompatActivity {
             Log.e("MainActivity", "Drawable resource not found: " + slayer_image_name);
         }
     }
+//    public void displayStats() {
+//        List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
+//        if (godsList != null) {
+//            for (GodStats god : godsList) {
+//
+//            }
+//        }
+//    }
+//    public void displayStats(View v) {
+//        TableLayout statsTable = findViewById(R.id.statsTable);
+//        statsTable.removeAllViews(); // Clear previous data
+//
+//        List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
+//
+//        if (godsList != null && !godsList.isEmpty()) {
+//            // Add header row
+//            TableRow headerRow = new TableRow(this);
+//            headerRow.addView(createTextView("God", true));
+//            headerRow.addView(createTextView("Attempts", true));
+//            headerRow.addView(createTextView("Successes", true));
+//            headerRow.addView(createTextView("Success Rate (%)", true));
+//            statsTable.addView(headerRow);
+//
+//            // Add rows for each god
+//            for (GodStats god : godsList) {
+//                TableRow row = new TableRow(this);
+//                row.addView(createTextView(god.name, false));
+//                row.addView(createTextView(String.valueOf(god.attempt_count), false));
+//                row.addView(createTextView(String.valueOf(god.success_count), false));
+//                double successRate = (god.attempt_count > 0) ? ((double) god.success_count / god.attempt_count) * 100 : 0;
+//                row.addView(createTextView(String.format("%.2f", successRate), false));
+//                statsTable.addView(row);
+//            }
+//        } else {
+//            Toast.makeText(this, "No stats available for the current pantheon", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    private TextView createTextView(String text, boolean isHeader) {
+//        TextView textView = new TextView(this);
+//        textView.setText(text);
+//        textView.setPadding(16, 16, 16, 16);
+//        textView.setTypeface(null, isHeader ? Typeface.BOLD : Typeface.NORMAL);
+//        return textView;
+//    }
 }
