@@ -1,12 +1,13 @@
 package com.example.masterthegods;
 
-import android.graphics.Typeface;
+import android.app.AlertDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -20,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
     private List<GodStats> poh_gods = new ArrayList();
     private Map<String, List<GodStats>> pantheonToGodsMap;
     private Boolean isPantheonUpdate = false;
+    private List<String> potm_history = new ArrayList();
+    private List<String> pota_history = new ArrayList();
+    private List<String> pots_history = new ArrayList();
+    private List<String> potk_history = new ArrayList();
+    private List<String> poh_history = new ArrayList();
+    private Map<String, List<String>> pantheonToHistoryMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,32 +60,32 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-
+        // Refactor repetitive code later...
         String[] potm_gods_str = getResources().getStringArray(R.array.potm_gods);
         for (String god : potm_gods_str) {
             GodStats newGod = new GodStats(god);
             potm_gods.add(newGod);
         }
 
-        String[] pota_gods_str = getResources().getStringArray(R.array.potm_gods);
+        String[] pota_gods_str = getResources().getStringArray(R.array.pota_gods);
         for (String god : pota_gods_str) {
             GodStats newGod = new GodStats(god);
             pota_gods.add(newGod);
         }
 
-        String[] pots_gods_str = getResources().getStringArray(R.array.potm_gods);
+        String[] pots_gods_str = getResources().getStringArray(R.array.pots_gods);
         for (String god : pots_gods_str) {
             GodStats newGod = new GodStats(god);
             pots_gods.add(newGod);
         }
 
-        String[] potk_gods_str = getResources().getStringArray(R.array.potm_gods);
+        String[] potk_gods_str = getResources().getStringArray(R.array.potk_gods);
         for (String god : potk_gods_str) {
             GodStats newGod = new GodStats(god);
             potk_gods.add(newGod);
         }
 
-        String[] poh_gods_str = getResources().getStringArray(R.array.potm_gods);
+        String[] poh_gods_str = getResources().getStringArray(R.array.poh_gods);
         for (String god : poh_gods_str) {
             GodStats newGod = new GodStats(god);
             poh_gods.add(newGod);
@@ -89,6 +97,13 @@ public class MainActivity extends AppCompatActivity {
         pantheonToGodsMap.put("Pantheon of the Sage", pots_gods);
         pantheonToGodsMap.put("Pantheon of the Knight", potk_gods);
         pantheonToGodsMap.put("Pantheon of Hallownest", poh_gods);
+
+        pantheonToHistoryMap = new HashMap<>();
+        pantheonToHistoryMap.put("Pantheon of the Master", potm_history);
+        pantheonToHistoryMap.put("Pantheon of the Artist", pota_history);
+        pantheonToHistoryMap.put("Pantheon of the Sage", pots_history);
+        pantheonToHistoryMap.put("Pantheon of the Knight", potk_history);
+        pantheonToHistoryMap.put("Pantheon of Hallownest", poh_history);
 
         Spinner pantheon_spinner = findViewById(R.id.pantheons);
         Spinner slayer_spinner = findViewById(R.id.slayers);
@@ -137,13 +152,17 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         if (isPantheonUpdate){
                             isPantheonUpdate = false;
-                            return;
+                        }else {
+                            String slayer = parent.getItemAtPosition(position).toString();
+                            // Add another death
+                            updateSlayCount(slayer);
+                            List<String> history = pantheonToHistoryMap.get(active_pantheon);
+                            if (history != null) {
+                                history.add(slayer);
+                            }
+                            Toast.makeText(MainActivity.this, "Slayed by: " + slayer, Toast.LENGTH_SHORT).show();
+                            updateSlayerImage(slayer);
                         }
-                        String slayer = parent.getItemAtPosition(position).toString();
-                        Toast.makeText(MainActivity.this, "Slayed by: " + slayer, Toast.LENGTH_SHORT).show();
-                        // Add another death
-                        updateSlayCount(slayer);
-                        updateSlayerImage(slayer);
                     }
 
 
@@ -154,6 +173,183 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+
+        Button statsButton = findViewById(R.id.statsButton);
+        statsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStatsDialog();
+            }
+        });
+
+        Button addButton = findViewById(R.id.addButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<String> history = pantheonToHistoryMap.get(active_pantheon);
+                if ((history != null) && (history.isEmpty())) {
+                    List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
+                    if (godsList != null) {
+                        String first_slayer = godsList.get(0).name;
+                        updateSlayCount(first_slayer);
+                        updateSlayerImage(first_slayer);
+                        Toast.makeText(MainActivity.this, "Slayed by: " + first_slayer, Toast.LENGTH_SHORT).show();
+                        history.add(first_slayer);
+                    }
+                } else if (history != null) {
+                    String most_recent_slayer = history.get(history.size()-1);
+                    updateSlayCount(most_recent_slayer);
+                    Toast.makeText(MainActivity.this, "Slayed by: " + most_recent_slayer, Toast.LENGTH_SHORT).show();
+                    updateSlayerImage(most_recent_slayer);
+                    history.add(most_recent_slayer);
+                }
+            }
+        });
+
+        Button undoButton = findViewById(R.id.undoButton);
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<String> history = pantheonToHistoryMap.get(active_pantheon);
+                if ((history != null) && (history.isEmpty())) {
+                    Toast.makeText(MainActivity.this, "No death history", Toast.LENGTH_SHORT).show();
+                } else if (history != null) {
+                    String most_recent_slayer = history.remove(history.size()-1);
+                    List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
+                    if (godsList != null) {
+                        for (GodStats god : godsList) {
+                            god.attempt_count -= 1;
+                            if (god.name.equals(most_recent_slayer)) {
+                                god.updateSuccessRate();
+                                if (!history.isEmpty()) {
+                                    updateSlayerImage(history.get(history.size()-1));
+                                } else {
+                                    updateSlayerImage("The Knight");
+                                }
+                                Toast.makeText(MainActivity.this, "Undid death to: " + god.name, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            god.success_count -= 1;
+                            god.updateSuccessRate();
+                        }
+                    }
+                }
+            }
+        });
+
+        Button resetButton = findViewById(R.id.resetButton);
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showResetConfirmationDialog();
+            }
+        });
+    }
+
+    private void showStatsDialog() {
+        View statsView = getLayoutInflater().inflate(R.layout.stats_table, null);
+
+        TableLayout statsTable = statsView.findViewById(R.id.statsTable);
+        Button closeButton = statsView.findViewById(R.id.closeButton);
+
+        // Populate the table
+        populateStatsTable(statsTable);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(statsView);
+        AlertDialog dialog = builder.create();
+
+        closeButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private void populateStatsTable(TableLayout statsTable) {
+        // Clear existing rows
+        statsTable.removeAllViews();
+
+        // Create header row
+        TableRow headerRow = new TableRow(this);
+        addTextViewToRow(headerRow, "God", true);
+        addTextViewToRow(headerRow, "Tries", true);
+        addTextViewToRow(headerRow, "Wins", true);
+        addTextViewToRow(headerRow, "Success Rate", true);
+        statsTable.addView(headerRow);
+
+        // Add data rows
+        List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
+        if (godsList != null) {
+            for (GodStats god : godsList) {
+                TableRow row = new TableRow(this);
+                addTextViewToRow(row, god.name, false);
+                addTextViewToRow(row, String.valueOf((int) god.attempt_count), false);
+                addTextViewToRow(row, String.valueOf((int) god.success_count), false);
+                addTextViewToRow(row, String.format("%.2f", god.success_rate), false);
+                statsTable.addView(row);
+            }
+        }
+    }
+
+    private void addTextViewToRow(TableRow row, String text, boolean isHeader) {
+        TextView textView = new TextView(this);
+        textView.setText(text);
+        textView.setPadding(16, 8, 16, 8);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        if (isHeader) {
+            textView.setBackgroundColor(0xFF6200EE); // Header color
+            textView.setTextColor(0xFFFFFFFF); // Header text color
+            textView.setTextSize(16);
+        } else {
+            textView.setBackgroundColor(0xFFFFFFFF); // Row color
+            textView.setTextColor(0xFF000000); // Row text color
+            textView.setTextSize(14);
+        }
+        TableRow.LayoutParams params = new TableRow.LayoutParams(
+                0, TableRow.LayoutParams.WRAP_CONTENT, 1);
+        textView.setLayoutParams(params);
+        row.addView(textView);
+    }
+
+    private void showResetConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_confirmation, null);
+
+        // Create and customize the dialog
+        builder.setView(dialogView);
+        builder.setTitle("Confirm Reset");
+        builder.setMessage("Are you sure you want to clear all data for the current pantheon?");
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            // Handle the reset action here
+            clearPantheonData();
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        // Create and show the dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Customize dialog buttons
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setTextColor(0xFF6200EE); // Use your header color
+
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        negativeButton.setTextColor(0xFF6200EE); // Use your header color
+    }
+
+    private void clearPantheonData() {
+        List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
+        if (godsList != null) {
+            for (GodStats god : godsList) {
+                god.reset();
+            }
+        }
+        List<String> history = pantheonToHistoryMap.get(active_pantheon);
+        if (history != null) {
+            history.clear();
+        }
+
+        updateSlayerImage("The Knight");
+        Toast.makeText(MainActivity.this, "Data cleared for " + active_pantheon, Toast.LENGTH_SHORT).show();
     }
 
     private void updateSlayersSpinner(String new_pantheon) {
@@ -187,6 +383,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
                 god.success_count += 1;
+                god.updateSuccessRate();
             }
         }
     }
@@ -200,49 +397,21 @@ public class MainActivity extends AppCompatActivity {
             Log.e("MainActivity", "Drawable resource not found: " + slayer_image_name);
         }
     }
-//    public void displayStats() {
-//        List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
-//        if (godsList != null) {
-//            for (GodStats god : godsList) {
-//
-//            }
-//        }
-//    }
-//    public void displayStats(View v) {
-//        TableLayout statsTable = findViewById(R.id.statsTable);
-//        statsTable.removeAllViews(); // Clear previous data
-//
-//        List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
-//
-//        if (godsList != null && !godsList.isEmpty()) {
-//            // Add header row
-//            TableRow headerRow = new TableRow(this);
-//            headerRow.addView(createTextView("God", true));
-//            headerRow.addView(createTextView("Attempts", true));
-//            headerRow.addView(createTextView("Successes", true));
-//            headerRow.addView(createTextView("Success Rate (%)", true));
-//            statsTable.addView(headerRow);
-//
-//            // Add rows for each god
-//            for (GodStats god : godsList) {
-//                TableRow row = new TableRow(this);
-//                row.addView(createTextView(god.name, false));
-//                row.addView(createTextView(String.valueOf(god.attempt_count), false));
-//                row.addView(createTextView(String.valueOf(god.success_count), false));
-//                double successRate = (god.attempt_count > 0) ? ((double) god.success_count / god.attempt_count) * 100 : 0;
-//                row.addView(createTextView(String.format("%.2f", successRate), false));
-//                statsTable.addView(row);
-//            }
-//        } else {
-//            Toast.makeText(this, "No stats available for the current pantheon", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//
-//    private TextView createTextView(String text, boolean isHeader) {
-//        TextView textView = new TextView(this);
-//        textView.setText(text);
-//        textView.setPadding(16, 16, 16, 16);
-//        textView.setTypeface(null, isHeader ? Typeface.BOLD : Typeface.NORMAL);
-//        return textView;
-//    }
+    private Map<String, List<GodStats>> initializePantheonToGodsMap() {
+        Map<String, List<GodStats>> map = new HashMap<>();
+
+        String[] pantheonNames = getResources().getStringArray(R.array.pantheons_items);
+        int[] pantheonArrays = {R.array.potm_gods, R.array.pota_gods, R.array.pots_gods, R.array.potk_gods, R.array.poh_gods};
+
+        for (int i = 0; i < pantheonNames.length; i++) {
+            String[] godNames = getResources().getStringArray(pantheonArrays[i]);
+            List<GodStats> godStatsList = new ArrayList<>();
+            for (String godName : godNames) {
+                godStatsList.add(new GodStats(godName));
+            }
+            map.put(pantheonNames[i], godStatsList);
+        }
+
+        return map;
+    }
 }

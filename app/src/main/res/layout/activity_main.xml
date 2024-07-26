@@ -5,17 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/bg_art">
+    android:background="@drawable/bg_art"
+    tools:context=".MainActivity">
 
     <Spinner
         android:id="@+id/pantheons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="0dp"
-        android:padding="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/spinner_background"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,29 +26,29 @@
         android:id="@+id/slayers"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:background="@drawable/spinner_background"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pantheons"
         app:layout_constraintVertical_bias="0.035"
-        app:layout_constraintWidth_default="wrap"
-        app:layout_constraintWidth="match_constraint"/>
+        app:layout_constraintWidth="match_constraint"
+        app:layout_constraintWidth_default="wrap" />
 
     <ImageView
         android:id="@+id/slayer"
         android:layout_width="280dp"
         android:layout_height="280dp"
         android:contentDescription="@string/the_knight"
-        app:srcCompat="@drawable/the_knight"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/the_knight" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/statsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stats"
@@ -57,14 +57,45 @@
         app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.774"
-        android:onClick="displayStats"/>
+        app:layout_constraintVertical_bias="0.774" />
 
-    <TableLayout
-        android:id="@+id/statsTable"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/undoButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:stretchColumns="*">
-    </TableLayout>
+        android:layout_marginTop="8dp"
+        android:text="Undo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statsButton"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="Reset"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statsButton"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="73dp"
+        android:layout_height="38dp"
+        android:text="+"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/slayers"
+        app:layout_constraintVertical_bias="0.02"
+        app:layout_constraintWidth="match_constraint"
+        app:layout_constraintWidth_default="wrap" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

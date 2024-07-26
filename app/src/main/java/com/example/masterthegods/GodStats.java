@@ -13,7 +13,7 @@ public class GodStats {
         this.name = name;
     }
 
-    public void update_success_rate() {
+    public void updateSuccessRate() {
         if (attempt_count != 0) {
             success_rate = success_count / attempt_count;
         } else {
@@ -21,4 +21,9 @@ public class GodStats {
         }
     }
 
+    public void reset() {
+        attempt_count = 0;
+        success_count = 0;
+        success_rate = 0;
+    }
 }
