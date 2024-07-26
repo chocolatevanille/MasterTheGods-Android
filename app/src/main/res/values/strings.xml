@@ -1,0 +1,105 @@
+<resources>
+    <string name="app_name">MasterTheGods</string>
+    <string name="pantheons">MasterTheGods</string>
+    <string-array name="pantheons_items">
+        <item>Pantheon of the Master</item>
+        <item>Pantheon of the Artist</item>
+        <item>Pantheon of the Sage</item>
+        <item>Pantheon of the Knight</item>
+        <item>Pantheon of Hallownest</item>
+    </string-array>
+    <string name="potm">Pantheon of the Master</string>
+    <string name="the_knight">The Knight</string>
+    <string-array name="potm_gods">
+        <item>Vengefly King</item>
+        <item>Gruz Mother</item>
+        <item>False Knight</item>
+        <item>Massive Moss Charger</item>
+        <item>Hornet Protector</item>
+        <item>Gorb</item>
+        <item>Dung Defender</item>
+        <item>Soul Warrior</item>
+        <item>Brooding Mawlek</item>
+        <item>Brothers Oro and Mato</item>
+    </string-array>
+    <string-array name="pota_gods">
+        <item>Xero</item>
+        <item>Crystal Guardian</item>
+        <item>Soul Master</item>
+        <item>Oblobbles</item>
+        <item>Mantis Lords</item>
+        <item>Marmu</item>
+        <item>Nosk</item>
+        <item>Flukemarm</item>
+        <item>Broken Vessel</item>
+        <item>Paintmaster Sheo</item>
+    </string-array>
+    <string-array name="pots_gods">
+        <item>Hive Knight</item>
+        <item>Elder Hu</item>
+        <item>The Collector</item>
+        <item>God Tamer</item>
+        <item>Troupe Master Grimm</item>
+        <item>Galien</item>
+        <item>Grey Prince Zote</item>
+        <item>Uumuu</item>
+        <item>Hornet Sentinel</item>
+        <item>Great Nailsage Sly</item>
+    </string-array>
+    <string-array name="potk_gods">
+        <item>Enraged Guardian</item>
+        <item>Lost Kin</item>
+        <item>No Eyes</item>
+        <item>Traitor Lord</item>
+        <item>White Defender</item>
+        <item>Failed Champion</item>
+        <item>Markoth</item>
+        <item>Watcher Knight</item>
+        <item>Soul Tyrant</item>
+        <item>Pure Vessel</item>
+    </string-array>
+    <string-array name="poh_gods">
+        <item>Vengefly King</item>
+        <item>Gruz Mother</item>
+        <item>False Knight</item>
+        <item>Massive Moss Charger</item>
+        <item>Hornet Protector</item>
+        <item>Gorb</item>
+        <item>Dung Defender</item>
+        <item>Soul Warrior</item>
+        <item>Brooding Mawlek</item>
+        <item>Brothers Oro and Mato</item>
+        <item>Xero</item>
+        <item>Crystal Guardian</item>
+        <item>Soul Master</item>
+        <item>Oblobbles</item>
+        <item>Sisters of Battle</item>
+        <item>Marmu</item>
+        <item>Flukemarm</item>
+        <item>Broken Vessel</item>
+        <item>Galien</item>
+        <item>Paintmaster Sheo</item>
+        <item>Hive Knight</item>
+        <item>Elder Hu</item>
+        <item>The Collector</item>
+        <item>God Tamer</item>
+        <item>Troupe Master Grimm</item>
+        <item>Watcher Knight</item>
+        <item>Uumuu</item>
+        <item>Winged Nosk</item>
+        <item>Great Nailsage Sly</item>
+        <item>Hornet Sentinel</item>
+        <item>Enraged Guardian</item>
+        <item>Lost Kin</item>
+        <item>No Eyes</item>
+        <item>Traitor Lord</item>
+        <item>White Defender</item>
+        <item>Soul Tyrant</item>
+        <item>Markoth</item>
+        <item>Grey Prince Zote</item>
+        <item>Failed Champion</item>
+        <item>Nightmare King Grimm</item>
+        <item>Pure Vessel</item>
+        <item>Absolute Radiance</item>
+    </string-array>
+</resources>

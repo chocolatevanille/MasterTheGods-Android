@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/bg_art">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4" />
+
+    <Spinner
+        android:id="@+id/pantheons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="0dp"
+        android:padding="10dp"
+        android:background="@drawable/spinner_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.098" />
+
+    <Spinner
+        android:id="@+id/slayers"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@drawable/spinner_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/pantheons"
+        app:layout_constraintVertical_bias="0.035"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintWidth="match_constraint"/>
+
+    <ImageView
+        android:id="@+id/slayer"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:contentDescription="@string/the_knight"
+        app:srcCompat="@drawable/the_knight"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
