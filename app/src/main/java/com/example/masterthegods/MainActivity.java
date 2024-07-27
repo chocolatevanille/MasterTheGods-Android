@@ -1,9 +1,14 @@
 package com.example.masterthegods;
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,8 +26,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,51 +68,13 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Refactor repetitive code later...
-        String[] potm_gods_str = getResources().getStringArray(R.array.potm_gods);
-        for (String god : potm_gods_str) {
-            GodStats newGod = new GodStats(god);
-            potm_gods.add(newGod);
-        }
+        //Initialize GodStats and history lists (and their maps) for all pantheons
+        initializeData();
 
-        String[] pota_gods_str = getResources().getStringArray(R.array.pota_gods);
-        for (String god : pota_gods_str) {
-            GodStats newGod = new GodStats(god);
-            pota_gods.add(newGod);
-        }
+        //Load any saved data
+        loadData();
 
-        String[] pots_gods_str = getResources().getStringArray(R.array.pots_gods);
-        for (String god : pots_gods_str) {
-            GodStats newGod = new GodStats(god);
-            pots_gods.add(newGod);
-        }
-
-        String[] potk_gods_str = getResources().getStringArray(R.array.potk_gods);
-        for (String god : potk_gods_str) {
-            GodStats newGod = new GodStats(god);
-            potk_gods.add(newGod);
-        }
-
-        String[] poh_gods_str = getResources().getStringArray(R.array.poh_gods);
-        for (String god : poh_gods_str) {
-            GodStats newGod = new GodStats(god);
-            poh_gods.add(newGod);
-        }
-
-        pantheonToGodsMap = new HashMap<>();
-        pantheonToGodsMap.put("Pantheon of the Master", potm_gods);
-        pantheonToGodsMap.put("Pantheon of the Artist", pota_gods);
-        pantheonToGodsMap.put("Pantheon of the Sage", pots_gods);
-        pantheonToGodsMap.put("Pantheon of the Knight", potk_gods);
-        pantheonToGodsMap.put("Pantheon of Hallownest", poh_gods);
-
-        pantheonToHistoryMap = new HashMap<>();
-        pantheonToHistoryMap.put("Pantheon of the Master", potm_history);
-        pantheonToHistoryMap.put("Pantheon of the Artist", pota_history);
-        pantheonToHistoryMap.put("Pantheon of the Sage", pots_history);
-        pantheonToHistoryMap.put("Pantheon of the Knight", potk_history);
-        pantheonToHistoryMap.put("Pantheon of Hallownest", poh_history);
-
+        //Create spinners and their interactions
         Spinner pantheon_spinner = findViewById(R.id.pantheons);
         Spinner slayer_spinner = findViewById(R.id.slayers);
         slayerImageView = findViewById(R.id.slayer);
@@ -187,22 +157,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 List<String> history = pantheonToHistoryMap.get(active_pantheon);
-                if ((history != null) && (history.isEmpty())) {
-                    List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
-                    if (godsList != null) {
-                        String first_slayer = godsList.get(0).name;
-                        updateSlayCount(first_slayer);
-                        updateSlayerImage(first_slayer);
-                        Toast.makeText(MainActivity.this, "Slayed by: " + first_slayer, Toast.LENGTH_SHORT).show();
-                        history.add(first_slayer);
-                    }
-                } else if (history != null) {
-                    String most_recent_slayer = history.get(history.size()-1);
-                    updateSlayCount(most_recent_slayer);
-                    Toast.makeText(MainActivity.this, "Slayed by: " + most_recent_slayer, Toast.LENGTH_SHORT).show();
-                    updateSlayerImage(most_recent_slayer);
-                    history.add(most_recent_slayer);
+                Spinner my_slayer_spinner = findViewById(R.id.slayers);
+                String selectedSlayer = slayer_spinner.getSelectedItem().toString();
+                updateSlayerImage(selectedSlayer);
+                Toast.makeText(MainActivity.this, "Slayed by: " + selectedSlayer, Toast.LENGTH_SHORT).show();
+                if (history != null) {
+                    history.add(selectedSlayer);
                 }
+                updateSlayCount(selectedSlayer);
             }
         });
 
@@ -246,6 +208,165 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveData(); //Always save data when user navigates away from app
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("SaveData", "Saving potm_gods: " + new Gson().toJson(potm_gods));
+        saveData(); //Always save data when user navigates away from app
+    }
+
+    //initializeData(): void -> void
+    //Initializes lists of GodStats and history for each Pantheon
+    private void initializeData() {
+        String[] potm_gods_str = getResources().getStringArray(R.array.potm_gods);
+        for (String god : potm_gods_str) {
+            GodStats newGod = new GodStats(god);
+            potm_gods.add(newGod);
+        }
+
+        String[] pota_gods_str = getResources().getStringArray(R.array.pota_gods);
+        for (String god : pota_gods_str) {
+            GodStats newGod = new GodStats(god);
+            pota_gods.add(newGod);
+        }
+
+        String[] pots_gods_str = getResources().getStringArray(R.array.pots_gods);
+        for (String god : pots_gods_str) {
+            GodStats newGod = new GodStats(god);
+            pots_gods.add(newGod);
+        }
+
+        String[] potk_gods_str = getResources().getStringArray(R.array.potk_gods);
+        for (String god : potk_gods_str) {
+            GodStats newGod = new GodStats(god);
+            potk_gods.add(newGod);
+        }
+
+        String[] poh_gods_str = getResources().getStringArray(R.array.poh_gods);
+        for (String god : poh_gods_str) {
+            GodStats newGod = new GodStats(god);
+            poh_gods.add(newGod);
+        }
+
+        pantheonToGodsMap = new HashMap<>();
+        pantheonToGodsMap.put("Pantheon of the Master", potm_gods);
+        pantheonToGodsMap.put("Pantheon of the Artist", pota_gods);
+        pantheonToGodsMap.put("Pantheon of the Sage", pots_gods);
+        pantheonToGodsMap.put("Pantheon of the Knight", potk_gods);
+        pantheonToGodsMap.put("Pantheon of Hallownest", poh_gods);
+
+        pantheonToHistoryMap = new HashMap<>();
+        pantheonToHistoryMap.put("Pantheon of the Master", potm_history);
+        pantheonToHistoryMap.put("Pantheon of the Artist", pota_history);
+        pantheonToHistoryMap.put("Pantheon of the Sage", pots_history);
+        pantheonToHistoryMap.put("Pantheon of the Knight", potk_history);
+        pantheonToHistoryMap.put("Pantheon of Hallownest", poh_history);
+    }
+
+    //saveData(): void -> void
+    //Saves user data using SharedPreferences, called when user navigates away from app
+    private void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("GodStatsPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        Gson gson = new Gson();
+        editor.putString("potm_gods", gson.toJson(potm_gods));
+        editor.putString("pota_gods", gson.toJson(pota_gods));
+        editor.putString("pots_gods", gson.toJson(pots_gods));
+        editor.putString("potk_gods", gson.toJson(potk_gods));
+        editor.putString("poh_gods", gson.toJson(poh_gods));
+        editor.putString("potm_history", gson.toJson(potm_history));
+        editor.putString("pota_history", gson.toJson(pota_history));
+        editor.putString("pots_history", gson.toJson(pots_history));
+        editor.putString("potk_history", gson.toJson(potk_history));
+        editor.putString("poh_history", gson.toJson(poh_history));
+
+        editor.apply(); // Use apply() for asynchronous operation
+        Log.d("SaveData", "Data saved successfully.");
+    }
+
+    private void loadData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("GodStatsPrefs", MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type godStatsType = new TypeToken<ArrayList<GodStats>>() {}.getType();
+        Type stringListType = new TypeToken<ArrayList<String>>() {}.getType();
+
+        String potm_gods_json = sharedPreferences.getString("potm_gods", null);
+        if (potm_gods_json != null) {
+            potm_gods = gson.fromJson(potm_gods_json, godStatsType);
+        }
+
+        String pota_gods_json = sharedPreferences.getString("pota_gods", null);
+        if (pota_gods_json != null) {
+            pota_gods = gson.fromJson(pota_gods_json, godStatsType);
+        }
+
+        String pots_gods_json = sharedPreferences.getString("pots_gods", null);
+        if (pots_gods_json != null) {
+            pots_gods = gson.fromJson(pots_gods_json, godStatsType);
+        }
+
+        String potk_gods_json = sharedPreferences.getString("potk_gods", null);
+        if (potk_gods_json != null) {
+            potk_gods = gson.fromJson(potk_gods_json, godStatsType);
+        }
+
+        String poh_gods_json = sharedPreferences.getString("poh_gods", null);
+        if (poh_gods_json != null) {
+            poh_gods = gson.fromJson(poh_gods_json, godStatsType);
+        }
+
+        String potm_history_json = sharedPreferences.getString("potm_history", null);
+        if (potm_history_json != null) {
+            potm_history = gson.fromJson(potm_history_json, stringListType);
+        }
+
+        String pota_history_json = sharedPreferences.getString("pota_history", null);
+        if (pota_history_json != null) {
+            pota_history = gson.fromJson(pota_history_json, stringListType);
+        }
+
+        String pots_history_json = sharedPreferences.getString("pots_history", null);
+        if (pots_history_json != null) {
+            pots_history = gson.fromJson(pots_history_json, stringListType);
+        }
+
+        String potk_history_json = sharedPreferences.getString("potk_history", null);
+        if (potk_history_json != null) {
+            potk_history = gson.fromJson(potk_history_json, stringListType);
+        }
+
+        String poh_history_json = sharedPreferences.getString("poh_history", null);
+        if (poh_history_json != null) {
+            poh_history = gson.fromJson(poh_history_json, stringListType);
+        }
+
+        // Reinitialize maps after loading data
+        pantheonToGodsMap = new HashMap<>();
+        pantheonToGodsMap.put("Pantheon of the Master", potm_gods);
+        pantheonToGodsMap.put("Pantheon of the Artist", pota_gods);
+        pantheonToGodsMap.put("Pantheon of the Sage", pots_gods);
+        pantheonToGodsMap.put("Pantheon of the Knight", potk_gods);
+        pantheonToGodsMap.put("Pantheon of Hallownest", poh_gods);
+
+        pantheonToHistoryMap = new HashMap<>();
+        pantheonToHistoryMap.put("Pantheon of the Master", potm_history);
+        pantheonToHistoryMap.put("Pantheon of the Artist", pota_history);
+        pantheonToHistoryMap.put("Pantheon of the Sage", pots_history);
+        pantheonToHistoryMap.put("Pantheon of the Knight", potk_history);
+        pantheonToHistoryMap.put("Pantheon of Hallownest", poh_history);
+
+        Log.d("LoadData", "Data loaded successfully.");
+    }
+
+    //showStatsDialog: void -> void
+    //displays the table of stats
     private void showStatsDialog() {
         View statsView = getLayoutInflater().inflate(R.layout.stats_table, null);
 
@@ -264,6 +385,9 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    //populateStatsTable: TableLayout -> void
+    //Taking in a TableLayout, it puts in the header and then all of the GodStats for the
+    // current pantheon
     private void populateStatsTable(TableLayout statsTable) {
         // Clear existing rows
         statsTable.removeAllViews();
@@ -296,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
         textView.setPadding(16, 8, 16, 8);
         textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         if (isHeader) {
-            textView.setBackgroundColor(0xFF6200EE); // Header color
+            textView.setBackgroundColor(0xFFC8A333); // Header color
             textView.setTextColor(0xFFFFFFFF); // Header text color
             textView.setTextSize(16);
         } else {
