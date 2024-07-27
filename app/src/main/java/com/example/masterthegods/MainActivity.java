@@ -2,14 +2,12 @@ package com.example.masterthegods;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,6 +25,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -98,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         isPantheonUpdate = true;
                         String new_pantheon = parent.getItemAtPosition(position).toString();
-                        Toast.makeText(MainActivity.this, "Selected: " + new_pantheon, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Selected: " + new_pantheon, Toast.LENGTH_SHORT).show();
+                        displayStatus("Selected: " + new_pantheon);
                         // Switch active pantheons
                         if (!new_pantheon.equals(active_pantheon)) {
                             active_pantheon = new_pantheon;
@@ -130,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
                             if (history != null) {
                                 history.add(slayer);
                             }
-                            Toast.makeText(MainActivity.this, "Slayed by: " + slayer, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(MainActivity.this, "Slain by: " + slayer, Toast.LENGTH_SHORT).show();
+                            displayStatus("Slain by: " + slayer, slayer);
                             updateSlayerImage(slayer);
                         }
                     }
@@ -160,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
                 Spinner my_slayer_spinner = findViewById(R.id.slayers);
                 String selectedSlayer = slayer_spinner.getSelectedItem().toString();
                 updateSlayerImage(selectedSlayer);
-                Toast.makeText(MainActivity.this, "Slayed by: " + selectedSlayer, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "Slain by: " + selectedSlayer, Toast.LENGTH_SHORT).show();
+                displayStatus("Slain by: " + selectedSlayer, selectedSlayer);
                 if (history != null) {
                     history.add(selectedSlayer);
                 }
@@ -174,7 +176,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 List<String> history = pantheonToHistoryMap.get(active_pantheon);
                 if ((history != null) && (history.isEmpty())) {
-                    Toast.makeText(MainActivity.this, "No death history", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "No death history", Toast.LENGTH_SHORT).show();
+                    displayStatus("No death history");
                 } else if (history != null) {
                     String most_recent_slayer = history.remove(history.size()-1);
                     List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
@@ -188,7 +191,8 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     updateSlayerImage("The Knight");
                                 }
-                                Toast.makeText(MainActivity.this, "Undid death to: " + god.name, Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(MainActivity.this, "Undid death to: " + god.name, Toast.LENGTH_SHORT).show();
+                                displayStatus("Undid death to: " + god.name, god.name);
                                 break;
                             }
                             god.success_count -= 1;
@@ -365,6 +369,47 @@ public class MainActivity extends AppCompatActivity {
         Log.d("LoadData", "Data loaded successfully.");
     }
 
+    private void displayStatus(String messageText, String imageName) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast,
+                (ViewGroup) findViewById(R.id.custom_toast_container));
+
+        ImageView image = layout.findViewById(R.id.toast_icon);
+        TextView text = layout.findViewById(R.id.toast_message);
+
+        String slayer_image_name = imageName.replace(" ", "_").toLowerCase();
+        int imageResourceId = getResources().getIdentifier(slayer_image_name, "drawable", getPackageName());
+        if (imageResourceId != 0) {
+            image.setImageResource(imageResourceId);
+        } else {
+            Log.e("MainActivity", "Drawable resource not found: " + slayer_image_name);
+        }
+
+        text.setText(messageText);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
+
+    private void displayStatus(String messageText) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast,
+                (ViewGroup) findViewById(R.id.custom_toast_container));
+
+        ImageView image = layout.findViewById(R.id.toast_icon);
+        TextView text = layout.findViewById(R.id.toast_message);
+
+        image.setImageResource(R.drawable.hk_icon);
+        text.setText(messageText);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
+
     //showStatsDialog: void -> void
     //displays the table of stats
     private void showStatsDialog() {
@@ -473,7 +518,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         updateSlayerImage("The Knight");
-        Toast.makeText(MainActivity.this, "Data cleared for " + active_pantheon, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(MainActivity.this, "Data cleared for " + active_pantheon, Toast.LENGTH_SHORT).show();
+        displayStatus("Data cleared for " + active_pantheon);
     }
 
     private void updateSlayersSpinner(String new_pantheon) {
