@@ -1,7 +1,8 @@
 # MasterTheGods - Android
 
 Author: Noël Barron  
-Github: https://github.com/chocolatevanille/MasterTheGods-Android    
+Github: https://github.com/chocolatevanille/MasterTheGods-Android   
+Demo: https://www.youtube.com/watch?v=10-PfxAWBmY   
 For help or bug reports, contact nbarroncs@gmail.com. Willing to add features on request.  
 
 This tool will allow you to keep track of your progress through the various pantheons in Hollow Knight's  
