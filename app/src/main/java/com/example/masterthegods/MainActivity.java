@@ -448,6 +448,7 @@ public class MainActivity extends AppCompatActivity {
         List<GodStats> godsList = pantheonToGodsMap.get(active_pantheon);
         if (godsList != null) {
             for (GodStats god : godsList) {
+                god.updateSuccessRate();
                 TableRow row = new TableRow(this);
                 addTextViewToRow(row, god.name, false);
                 addTextViewToRow(row, String.valueOf((int) god.attempt_count), false);
