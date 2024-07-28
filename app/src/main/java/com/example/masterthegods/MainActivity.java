@@ -221,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d("SaveData", "Saving potm_gods: " + new Gson().toJson(potm_gods));
         saveData(); //Always save data when user navigates away from app
     }
 
@@ -499,10 +498,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Customize dialog buttons
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        positiveButton.setTextColor(0xFF6200EE); // Use your header color
+        positiveButton.setTextColor(0xFFC8A333); // Use your header color
 
         Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        negativeButton.setTextColor(0xFF6200EE); // Use your header color
+        negativeButton.setTextColor(0xFFFFFFFF); // Use your header color
     }
 
     private void clearPantheonData() {
