@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.masterthegods"
+    namespace = "game.hollowknight.masterthegods"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.masterthegods"
+        applicationId = "game.hollowknight.masterthegods"
         minSdk = 27
         targetSdk = 34
         versionCode = 1

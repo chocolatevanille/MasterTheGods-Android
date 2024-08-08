@@ -1,4 +1,4 @@
-package com.example.masterthegods;
+package game.hollowknight.masterthegods;
 
 public class GodStats {
     double attempt_count;

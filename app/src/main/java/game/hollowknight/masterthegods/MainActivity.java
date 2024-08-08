@@ -1,4 +1,4 @@
-package com.example.masterthegods;
+package game.hollowknight.masterthegods;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
@@ -25,7 +25,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
