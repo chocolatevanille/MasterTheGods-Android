@@ -4,7 +4,7 @@ Author: Noël Barron
 Github: https://github.com/chocolatevanille/MasterTheGods-Android    
 Demo: https://www.youtube.com/watch?v=10-PfxAWBmY
 
-### Status (08/07/2024): Currently requesting publishing to Google Play Store
+### Status (08/12/2024): Entering Closed Testing (14 day process)
 
 For help or bug reports, contact nbarroncs@gmail.com. Willing to add features on request.  
 
